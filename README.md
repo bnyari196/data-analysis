@@ -9,3 +9,11 @@ Objectives:
   - Utilize data visualization techniques, including scatter plots, histograms, box plots, and density plots.
   - Analyze correlations between variables.
   - Demonstrate the use of R functions (e.g., sapply(), ggplot2, corrplot).
+
+## Skills & Tools Used
+  - R Programming
+  - Data Cleaning & Preprocessing
+  - Descriptive Statistics
+  - Data Visualization (ggplot2, corrplot)
+  - Exploratory Data Analysis (EDA)
+  - Statistical Modeling
