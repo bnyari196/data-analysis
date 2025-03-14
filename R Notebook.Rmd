@@ -1,0 +1,149 @@
+---
+title: "Exploratory Data Analysis of Air Quality"
+author: "Balázs Nyári"
+output: html_document
+---
+
+**Exercise 3**
+
+- Produce a report in the form of an R Notebook
+- The Notebook should include:
+  - Code
+  - Output generated
+  - Formatted text to describe your working, including obesrvations about the dataset
+- The report should include the following
+  - General information about the dataset - examples of rows or data, details 
+  about variables and no. observations
+  - Descriptive statistics - measures of central tendency and variation for
+  relevant variables (the sapply function could be used)
+  - Data cleaning - replace missing values with the mean for the variable (see)
+  section 7 of Practical 2)
+  - Data visualisation - scatter plots, histograms and boxplots
+  - Correlations between relevant variables
+  - Boxplots by month (you will need to convert the month variable from an 
+  integer variable to a categorical varaible - slide 53, week 3)
+  - Density Plots by month (slide 48, week 3)
+
+Examples of **rows**, details about **variables** and **number of observations**
+
+**General Information about the dataset**
+```{r}
+df <- airquality
+summary(df)
+```
+
+**Examples of rows**
+```{r}
+head(df)
+
+```
+
+**Details about variables and number of observations (153)**
+```{r}
+str(df)
+```
+
+**Descriptive Statistics**
+
+- Measures of central tendency and variation for relevant variables
+  - mean, median of the dataset essentially
+- sapply function could be used
+
+*Central Tendency* of **Wind Speeds** at LaGuardia Airport
+
+- Display *Mean* and *Standard Deviation*
+```{r}
+# Mean
+sapply(df[,-5:-6], na.rm=TRUE, mean)
+# Standard Deviation
+sapply(df[,-5:-6], na.rm=TRUE, sd)
+```
+**Data cleaning** - replacing missing values with the mean for the variable
+
+- This only applies to *Solar.R* field & *Ozone*
+```{r}
+sum(is.na(df))
+colSums(is.na(df))
+```
+
+```{r}
+df$Solar.R[is.na(df$Solar.R)] <- mean(df$Solar.R, na.rm = TRUE)
+df$Ozone[is.na(df$Ozone)] <- mean(df$Ozone, na.rm = TRUE)
+head(df)
+```
+Display Mean and Standard Deviation after Replacing Missing Data
+
+- (Note that the mean has not changed but the standard deviation is reduced)
+```{r}
+# Mean - After changes
+sapply(df[,-5:-6], na.rm=TRUE, mean)
+# Standard Deviation - After changes
+sapply(df[,-5:-6], na.rm=TRUE, sd)
+```
+
+**Data visualisation** 
+
+- scatter plots, histograms and boxplots
+
+**Scatter Plots**
+```{r}
+# Pretty broken function
+pairs(df[,-6], cex=0.7)
+```
+
+**Box Plots**
+```{r}
+boxplot(df$Solar.R, main="Boxplot of Solar Radiation", ylab="Radiation (ppb)")
+boxplot(df$Wind, main="Boxplot of Windspeed", ylab="Windspeed (mph)")
+boxplot(df$Temp, main="Boxplot of Temperature", ylab="Temperature (F)")
+boxplot(df$Ozone, main="Boxplot of Ozone", ylab="Ozone level")
+```
+
+**Histogram**
+```{r}
+hist(df$Solar.R, main = "Histogram of Solar Radiation", xlab ="Radiation (ppb)")
+hist(df$Wind, main = "Histogram of Windspeeds", xlab ="wind (mph)")
+hist(df$Temp, main = "Histogram of Temperature", xlab ="Temperature (F)")
+hist(df$Ozone, main = "Histogram of Ozone", xlab ="Ozone level")
+
+```
+**Correlation Plot**
+```{r}
+library(corrplot)
+M <- cor(df[,-6])
+corrplot(M, method='number')
+```
+
+
+**Boxplots by month** 
+
+- Convert *Month* variable from an integer variable to a categorical variable
+```{r}
+df$Month = factor(df$Month)
+str(df) # Factor w/5 levels created
+```
+```{r}
+# boxplot(df$Month) - WRONG
+# ******* USE GGPLOT! *********
+library(ggplot2)
+ggplot(df, aes(x=Month, y=Ozone)) + geom_boxplot(aes(fill=Month))
+ggplot(df, aes(x=Month, y=Solar.R)) + geom_boxplot(aes(fill=Month))
+ggplot(df, aes(x=Month, y=Wind)) + geom_boxplot(aes(fill=Month))
+ggplot(df, aes(x=Month, y=Temp)) + geom_boxplot(aes(fill=Month))
+
+```
+
+**Density plots** by *Month*
+```{r}
+library(ggplot2)
+# Correct!!!
+ggplot(df,aes(x=Temp)) +
+  geom_density(aes(fill = Month), alpha = 0.5)
+```
+
+**More Learning Required**
+
+- Using *Ggplot* to plot boxplots!
+- using *pairs* to plot a fuck ton of scatter graphs at once
+- **DATA CLEANSING** - df$Ozone[is.na(df$Ozone)] <- mean(df$Ozone, na.rm = TRUE)
+- sapply function - sapply(df[,-5:-6], na.rm=TRUE, mean)
